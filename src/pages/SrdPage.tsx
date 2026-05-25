@@ -109,7 +109,8 @@ const TABS: { id: TabId; label: string }[] = [
 
 export default function SrdPage() {
   const [tab, setTab]         = useState<TabId>('races')
-  const [ruleset, setRuleset] = useState<SrdRuleset>('5.1')
+  // PHB 2024 對齊：取消支援 5.1，固定 5.2（不再渲染 selector）
+  const [ruleset] = useState<SrdRuleset>('5.2')
   const [locale, setLocale]   = useState<SrdLocale>('zh-TW')
   const [search, setSearch]   = useState('')
 
@@ -222,12 +223,7 @@ export default function SrdPage() {
           <span className="text-sm font-normal text-slate-400 ml-2">WBS 2.4</span>
         </h1>
         <div className="flex gap-3 flex-wrap ml-auto">
-          <Toggle
-            label="Ruleset"
-            options={[{ value: '5.1', label: 'SRD 5.1' }, { value: '5.2', label: 'SRD 5.2' }]}
-            value={ruleset}
-            onChange={v => { setRuleset(v); setItems([]); setSelected(null) }}
-          />
+          {/* Ruleset selector 隱藏：取消支援 5.1，全 app 固定使用 5.2 */}
           <Toggle
             label="Language"
             options={[{ value: 'zh-TW', label: '繁中' }, { value: 'en', label: 'EN' }]}

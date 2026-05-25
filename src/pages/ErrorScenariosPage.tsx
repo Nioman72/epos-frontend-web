@@ -123,7 +123,7 @@ export default function ErrorScenariosPage() {
     setFlooding(true); setR429([])
     const results: TestResult[] = []
     for (let i = 0; i < 15; i++) {
-      const r = await capture(`Request #${i + 1}`, () => srdApi.listRaces('5.1', 'en'))
+      const r = await capture(`Request #${i + 1}`, () => srdApi.listRaces('5.2', 'en'))
       results.push(r)
       setR429([...results])
       if (r.status === 429) break

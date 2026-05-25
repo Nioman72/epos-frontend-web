@@ -659,23 +659,7 @@ export default function CharacterWizardPage() {
           🧙 Character Wizard
           <span className="text-sm font-normal text-slate-400 ml-2">WBS 2.5</span>
         </h1>
-        {/* Ruleset selector */}
-        <div className="ml-auto flex items-center gap-2">
-          <span className="text-xs text-slate-400">Ruleset</span>
-          {(['5.1', '5.2'] as SrdRuleset[]).map(v => (
-            <button
-              key={v}
-              onClick={() => { setRuleset(v); setStep(0); setSummary({}); setCreatedChar(null) }}
-              className={`px-3 py-1 rounded text-xs font-medium border transition-colors ${
-                ruleset === v
-                  ? 'border-violet-500 bg-violet-900/40 text-violet-300'
-                  : 'border-slate-600 text-slate-400 hover:border-slate-400'
-              }`}
-            >
-              SRD {v}
-            </button>
-          ))}
-        </div>
+        {/* Ruleset selector 隱藏：取消支援 5.1，全 app 固定使用 5.2 (PHB 2024) */}
       </div>
 
       <StepIndicator current={step} />
