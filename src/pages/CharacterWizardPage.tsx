@@ -643,7 +643,8 @@ interface WizardSummary {
 export default function CharacterWizardPage() {
   const { isAuthenticated } = useAuth()
   const [step, setStep]         = useState(0)
-  const [ruleset, setRuleset]   = useState<SrdRuleset>('5.2')
+  // 驗證工具固定用 5.2（setter 未使用；Phase 5 正式產品才開放切換）
+  const [ruleset]               = useState<SrdRuleset>('5.2')
   const [summary, setSummary]   = useState<Partial<WizardSummary>>({})
   const [createdChar, setCreatedChar] = useState<CharacterSummary | null>(null)
 
