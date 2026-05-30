@@ -1,0 +1,30 @@
+name: CI
+
+# Web 持續整合：push 到 main 或開 PR 時跑 build（含 tsc -b typecheck）
+# 目前無單元測試（Phase 2 驗證工具，Phase 5 升級正式產品時補）
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build (Node 20)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # build script 為 "tsc -b && vite build"，等同 typecheck + 打包
+      # 註：lint 暫不納入 CI——本專案為 Phase 2 驗證工具，有既有 lint debt，
+      #     Phase 5 升級正式產品時統一處理
+      - name: Build
+        run: npm run build
