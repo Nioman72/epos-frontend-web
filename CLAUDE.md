@@ -38,10 +38,12 @@
 | `lib/rules` | abilityMod/proficiencyBonus/proficiencyBonusFor/SKILL_ABILITY |
 | `pages/LoginPage` | 品牌登入（複用 AuthContext.login） |
 | `pages/CharactersListPage` | useQuery list + 卡片網格 + Avatar |
-| `pages/CharacterSheetPage` | 唯讀：六圍/戰鬥/技能(被動感知)/攻擊/法術/裝備（inventoryApi） |
+| `pages/CharacterSheetPage` | 唯讀：六圍/戰鬥/技能(被動感知)/攻擊/法術/裝備/性格(W5) |
 
-- 後端前提：**W0 detail GET 補六圍/技能/豁免**（見 `../epos-backend-api/CLAUDE.md`）。
-- ⚠️ 性格區待後端 traits DTO 補完（下一階段）；完整端對端需後端 localhost:8080。
+- 後端前提：**W0 detail GET 補六圍/技能/豁免**（見 `../epos-backend-api/CLAUDE.md`）。完整端對端需後端 localhost:8080（待驗證）。
+
+**W5 性格補完（✅ 2026-06-14）**：後端 detail GET 加 `backstory` 物件 → 角色卡加「性格與背景」區（性格特質/理想/羈絆/缺陷 + 背景故事，任一有值才顯示）。
+- ⚠️ **web gate 命令＝`npm run build`**（`tsc -b` project references + vite），**非裸 `tsc --noEmit`**——後者只看根 tsconfig、不檢查 app 程式碼（tsconfig.app.json）會「假綠」。W5 用 `npm run build` 抓出並修復第一刀遺留的 `it.itemName`（ItemDto 應 `customName`）型別錯。
 - 後續階段：角色卡編輯 / 建角 wizard / 戰役·DM / 即時同步 Web / 好友·頭像·PDF 對等。
 
 ## Phase 5 — 升級正式產品（併入 6.2，見上）

@@ -5,8 +5,8 @@ import { inventoryApi } from '../api/inventoryApi'
 import { Avatar } from '../components/Avatar'
 import { abilityMod, proficiencyBonus, proficiencyBonusFor, signed, SKILL_ABILITY } from '../lib/rules'
 
-// 唯讀角色卡（6.2 W3）：react-query 直接 API；六圍/戰鬥/技能/攻擊/法術/裝備。
-// 性格（personality/ideal/bond/flaw）後端 DTO 暫未回，故第一刀不顯示（待後端 traits 補完）。
+// 唯讀角色卡（6.2 W3 + W5）：react-query 直接 API；六圍/戰鬥/技能/攻擊/法術/裝備/性格。
+// 性格敘事由後端 detail GET 的 backstory 物件提供（W5 補完，list 端點不帶）。
 const ABILITIES = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA'] as const
 
 export default function CharacterSheetPage() {
@@ -160,13 +160,36 @@ export default function CharacterSheetPage() {
           <h2 style={h2}>裝備</h2>
           {inventory.map((it) => (
             <div key={it.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '4px 0', borderBottom: '1px solid var(--border)' }}>
-              <span>{it.itemName}{it.quantity > 1 ? ` ×${it.quantity}` : ''}</span>
+              <span>{it.customName ?? '物品'}{it.quantity > 1 ? ` ×${it.quantity}` : ''}</span>
               {it.equipped && <span style={{ color: 'var(--accent)', fontSize: 11 }}>已裝備</span>}
             </div>
           ))}
           <p style={{ marginTop: 10, fontSize: 12, color: 'var(--accent)' }}>
             CP {c.cp ?? 0} · SP {c.sp ?? 0} · GP {c.gp ?? 0} · PP {c.pp ?? 0}
           </p>
+        </section>
+      )}
+
+      {/* 性格與背景（W5：後端 detail GET backstory；任一欄有值才顯示） */}
+      {c.backstory && (c.backstory.personalityTraits || c.backstory.ideals || c.backstory.bonds || c.backstory.flaws || c.backstory.backstory) && (
+        <section style={card}>
+          <h2 style={h2}>性格與背景</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 24px' }}>
+            {([['性格特質', c.backstory.personalityTraits], ['理想', c.backstory.ideals], ['羈絆', c.backstory.bonds], ['缺陷', c.backstory.flaws]] as const)
+              .filter(([, v]) => !!v)
+              .map(([label, v]) => (
+                <div key={label}>
+                  <div style={{ fontSize: 10, letterSpacing: 2, color: 'var(--accent)', marginBottom: 3 }}>{label}</div>
+                  <div style={{ fontSize: 13, whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>{v}</div>
+                </div>
+              ))}
+          </div>
+          {c.backstory.backstory && (
+            <div style={{ marginTop: 14 }}>
+              <div style={{ fontSize: 10, letterSpacing: 2, color: 'var(--accent)', marginBottom: 3 }}>背景故事</div>
+              <div style={{ fontSize: 13, whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{c.backstory.backstory}</div>
+            </div>
+          )}
         </section>
       )}
     </div>

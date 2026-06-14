@@ -10,6 +10,14 @@ export interface PreparedSpellSummary {
   id: string; spellName: string; spellLevel: number; school: string | null
   castingRange: string | null; concentration: boolean; prepared: boolean
 }
+// 角色扮演敘事（detail GET 提供；list 缺）——後端 NON_NULL 序列化，空欄省略故每欄 optional
+export interface BackstorySummary {
+  personalityTraits?: string | null
+  ideals?: string | null
+  bonds?: string | null
+  flaws?: string | null
+  backstory?: string | null
+}
 
 export interface CharacterSummary {
   id: string
@@ -38,6 +46,7 @@ export interface CharacterSummary {
   attacks?: AttackSummary[]
   spellSlots?: SpellSlotSummary[]
   preparedSpells?: PreparedSpellSummary[]
+  backstory?: BackstorySummary
 }
 
 export interface CreateCharacterRequest {
