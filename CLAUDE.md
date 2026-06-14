@@ -47,7 +47,12 @@
 **即時狀態編輯（✅ 2026-06-14）**：角色卡 HP / 貨幣 / 法術環位可編輯（用既有後端 PATCH /hp、PATCH /currency、PUT /spell-slots）。
 - 編輯基礎設施 `hooks/useCharacterMutations`：mutation onSuccess 以伺服器回應 `setQueryData(['character',id])` + invalidate 清單（不採 optimistic/rollback——web 網路穩定 + 後端回完整 DTO 已即時）；後續欄位編輯複用。
 - 元件 `HpAdjuster`（治療/傷害/暫時 HP）、`CurrencyEditor`（5 幣別絕對值覆寫）；法術環位步進 inline 全量 PUT；金錢改獨立區（不再依賴 inventory）。
-- 後續階段：其餘欄位編輯（六圍/職業…）/ 建角 wizard / 戰役·DM / 即時同步 Web / 好友·頭像·PDF 對等。
+- 後續：其餘欄位編輯複用此基礎設施。
+
+**完整引導建角 wizard（✅ 2026-06-14）**：`pages/CharacterCreatePage` 6 步（種族→職業→背景→屬性→技能→確認）。
+- 複用 Phase 2 建角邏輯（計算 calcHp/calcAc + create→sync→applyBackground 提交鏈），品牌化 UI（移除 dev violet/JsonPanel）；建好導向角色卡。
+- 補上 Phase 2 缺漏：**職業寫入**（sync `classes`，含 classId/subclassId）+ **技能選擇步驟**（sync `skills`）。⚠️ 此二 sync 路徑 Phase 2 傳 null 未驗（mobile 有用故後端支援），完整端對端待後端 localhost:8080 **優先驗證**。
+- 後續階段：其餘欄位編輯（六圍/職業後修）/ 戰役·DM / 即時同步 Web / 好友·頭像·PDF 對等。
 
 ## Phase 5 — 升級正式產品（併入 6.2，見上）
 

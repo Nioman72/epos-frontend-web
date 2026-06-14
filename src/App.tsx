@@ -6,6 +6,7 @@ import { ProtectedRoute } from './components/ProtectedRoute'
 // 正式產品頁（6.2）
 import LoginPage from './pages/LoginPage'
 import CharactersListPage from './pages/CharactersListPage'
+import CharacterCreatePage from './pages/CharacterCreatePage'
 import CharacterSheetPage from './pages/CharacterSheetPage'
 
 // Phase 2 驗證頁（dev 工具，保留於 /dev/*）
@@ -21,11 +22,12 @@ import ErrorScenariosPage from './pages/ErrorScenariosPage'
 export default function App() {
   return (
     <Routes>
-      {/* 正式產品（6.2 唯讀角色卡切片） */}
+      {/* 正式產品（6.2：角色卡讀/編輯 + 建角 wizard） */}
       <Route path="/login" element={<LoginPage />} />
       <Route element={<ProtectedRoute />}>
         <Route element={<AppShell />}>
           <Route path="/characters" element={<CharactersListPage />} />
+          <Route path="/characters/new" element={<CharacterCreatePage />} />
           <Route path="/characters/:id" element={<CharacterSheetPage />} />
         </Route>
       </Route>

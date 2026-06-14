@@ -15,9 +15,15 @@ export default function CharactersListPage() {
 
   return (
     <div>
-      <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 26, letterSpacing: 3, color: 'var(--text)', marginBottom: 24 }}>
-        我的角色
-      </h1>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 26, letterSpacing: 3, color: 'var(--text)', margin: 0 }}>
+          我的角色
+        </h1>
+        <button onClick={() => navigate('/characters/new')} style={{
+          border: '1px solid var(--accent)', background: 'var(--accent-bg)', color: 'var(--accent)',
+          borderRadius: 4, padding: '8px 16px', cursor: 'pointer', fontSize: 13, letterSpacing: 1,
+        }}>+ 建立角色</button>
+      </div>
 
       {isLoading && <p style={{ color: 'var(--muted)' }}>載入中…</p>}
       {error && <p style={{ color: 'var(--danger)' }}>載入失敗，請稍後再試。</p>}
