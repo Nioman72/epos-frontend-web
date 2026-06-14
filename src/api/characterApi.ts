@@ -5,6 +5,8 @@ import type {
   SyncCharacterRequest,
   ApplyBackgroundResponse,
   PageResponse,
+  SpellSlotInput,
+  CurrencyUpdate,
 } from '../types/character'
 import type { LevelUpRequest } from '../types/levelup'
 
@@ -34,6 +36,13 @@ export const characterApi = {
 
   updateHp: (id: string, delta: number, tempHp = false) =>
     apiClient.patch<CharacterSummary>(`${BASE}/${id}/hp`, { delta, tempHp }).then(r => r.data),
+
+  updateCurrency: (id: string, body: CurrencyUpdate) =>
+    apiClient.patch<CharacterSummary>(`${BASE}/${id}/currency`, body).then(r => r.data),
+
+  // 全量替換法術環位快照（後端為 PUT，非 PATCH）
+  updateSpellSlots: (id: string, slots: SpellSlotInput[]) =>
+    apiClient.put<CharacterSummary>(`${BASE}/${id}/spell-slots`, { slots }).then(r => r.data),
 
   archive: (id: string) =>
     apiClient.patch<CharacterSummary>(`${BASE}/${id}/archive`).then(r => r.data),

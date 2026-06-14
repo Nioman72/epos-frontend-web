@@ -4,6 +4,10 @@ import { characterApi } from '../api/characterApi'
 import { inventoryApi } from '../api/inventoryApi'
 import { Avatar } from '../components/Avatar'
 import { abilityMod, proficiencyBonus, proficiencyBonusFor, signed, SKILL_ABILITY } from '../lib/rules'
+import { HpAdjuster } from '../components/HpAdjuster'
+import { CurrencyEditor } from '../components/CurrencyEditor'
+import { useUpdateSpellSlots } from '../hooks/useCharacterMutations'
+import type { SpellSlotInput } from '../types/character'
 
 // 唯讀角色卡（6.2 W3 + W5）：react-query 直接 API；六圍/戰鬥/技能/攻擊/法術/裝備/性格。
 // 性格敘事由後端 detail GET 的 backstory 物件提供（W5 補完，list 端點不帶）。
@@ -22,6 +26,7 @@ export default function CharacterSheetPage() {
     queryFn: () => inventoryApi.list(id!),
     enabled: !!id,
   })
+  const slotsMutation = useUpdateSpellSlots(id!)
 
   if (isLoading) return <p style={{ color: 'var(--muted)' }}>載入中…</p>
   if (error || !c) return <p style={{ color: 'var(--danger)' }}>載入角色失敗。</p>
@@ -98,6 +103,7 @@ export default function CharacterSheetPage() {
             )
           })}
         </div>
+        <HpAdjuster characterId={c.id} />
       </section>
 
       {/* 技能 */}
@@ -138,11 +144,29 @@ export default function CharacterSheetPage() {
           <h2 style={h2}>法術</h2>
           {!!c.spellSlots?.length && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 10 }}>
-              {c.spellSlots.filter((s) => s.slotsMax > 0).map((s) => (
-                <span key={s.spellLevel} style={{ fontSize: 11, color: 'var(--muted)', border: '1px solid var(--border)', borderRadius: 4, padding: '2px 8px' }}>
-                  環 {s.spellLevel}：{s.slotsMax}
-                </span>
-              ))}
+              {c.spellSlots.filter((s) => s.slotsMax > 0).map((s) => {
+                const setUsed = (used: number) => {
+                  const next: SpellSlotInput[] = (c.spellSlots ?? []).map((x) =>
+                    x.spellLevel === s.spellLevel ? { ...x, slotsUsed: used } : x)
+                  slotsMutation.mutate(next)
+                }
+                const stepBtn = (off: boolean): React.CSSProperties => ({
+                  background: 'transparent', border: 'none', color: 'var(--accent)',
+                  cursor: off ? 'default' : 'pointer', fontSize: 14, padding: '0 5px',
+                  lineHeight: 1, opacity: off ? 0.3 : 1,
+                })
+                const spent = s.slotsUsed >= s.slotsMax
+                const full = s.slotsUsed <= 0
+                return (
+                  <span key={s.spellLevel} style={{ display: 'inline-flex', alignItems: 'center', gap: 2, fontSize: 11, color: 'var(--muted)', border: '1px solid var(--border)', borderRadius: 4, padding: '2px 4px' }}>
+                    <button disabled={full || slotsMutation.isPending} onClick={() => setUsed(s.slotsUsed - 1)}
+                      title="回復一格" style={stepBtn(full || slotsMutation.isPending)}>＋</button>
+                    <span style={{ minWidth: 58, textAlign: 'center' }}>環 {s.spellLevel}：{s.slotsMax - s.slotsUsed}/{s.slotsMax}</span>
+                    <button disabled={spent || slotsMutation.isPending} onClick={() => setUsed(s.slotsUsed + 1)}
+                      title="消耗一格" style={stepBtn(spent || slotsMutation.isPending)}>－</button>
+                  </span>
+                )
+              })}
             </div>
           )}
           {(c.preparedSpells ?? []).slice().sort((a, b) => a.spellLevel - b.spellLevel).map((s) => (
@@ -164,11 +188,14 @@ export default function CharacterSheetPage() {
               {it.equipped && <span style={{ color: 'var(--accent)', fontSize: 11 }}>已裝備</span>}
             </div>
           ))}
-          <p style={{ marginTop: 10, fontSize: 12, color: 'var(--accent)' }}>
-            CP {c.cp ?? 0} · SP {c.sp ?? 0} · GP {c.gp ?? 0} · PP {c.pp ?? 0}
-          </p>
         </section>
       )}
+
+      {/* 金錢（獨立區，不依賴 inventory；即時狀態編輯：絕對值覆寫） */}
+      <section style={card}>
+        <h2 style={h2}>金錢</h2>
+        <CurrencyEditor characterId={c.id} cp={c.cp ?? 0} sp={c.sp ?? 0} ep={c.ep ?? 0} gp={c.gp ?? 0} pp={c.pp ?? 0} />
+      </section>
 
       {/* 性格與背景（W5：後端 detail GET backstory；任一欄有值才顯示） */}
       {c.backstory && (c.backstory.personalityTraits || c.backstory.ideals || c.backstory.bonds || c.backstory.flaws || c.backstory.backstory) && (

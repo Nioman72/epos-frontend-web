@@ -44,7 +44,10 @@
 
 **W5 性格補完（✅ 2026-06-14）**：後端 detail GET 加 `backstory` 物件 → 角色卡加「性格與背景」區（性格特質/理想/羈絆/缺陷 + 背景故事，任一有值才顯示）。
 - ⚠️ **web gate 命令＝`npm run build`**（`tsc -b` project references + vite），**非裸 `tsc --noEmit`**——後者只看根 tsconfig、不檢查 app 程式碼（tsconfig.app.json）會「假綠」。W5 用 `npm run build` 抓出並修復第一刀遺留的 `it.itemName`（ItemDto 應 `customName`）型別錯。
-- 後續階段：角色卡編輯 / 建角 wizard / 戰役·DM / 即時同步 Web / 好友·頭像·PDF 對等。
+**即時狀態編輯（✅ 2026-06-14）**：角色卡 HP / 貨幣 / 法術環位可編輯（用既有後端 PATCH /hp、PATCH /currency、PUT /spell-slots）。
+- 編輯基礎設施 `hooks/useCharacterMutations`：mutation onSuccess 以伺服器回應 `setQueryData(['character',id])` + invalidate 清單（不採 optimistic/rollback——web 網路穩定 + 後端回完整 DTO 已即時）；後續欄位編輯複用。
+- 元件 `HpAdjuster`（治療/傷害/暫時 HP）、`CurrencyEditor`（5 幣別絕對值覆寫）；法術環位步進 inline 全量 PUT；金錢改獨立區（不再依賴 inventory）。
+- 後續階段：其餘欄位編輯（六圍/職業…）/ 建角 wizard / 戰役·DM / 即時同步 Web / 好友·頭像·PDF 對等。
 
 ## Phase 5 — 升級正式產品（併入 6.2，見上）
 

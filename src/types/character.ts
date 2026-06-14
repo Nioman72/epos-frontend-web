@@ -19,6 +19,10 @@ export interface BackstorySummary {
   backstory?: string | null
 }
 
+// 即時狀態編輯 request（6.2）
+export interface SpellSlotInput { spellLevel: number; slotsMax: number; slotsUsed: number }
+export interface CurrencyUpdate { cp: number; sp: number; ep: number; gp: number; pp: number }
+
 export interface CharacterSummary {
   id: string
   name: string
