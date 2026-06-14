@@ -6,6 +6,7 @@ import { Avatar } from '../components/Avatar'
 import { abilityMod, proficiencyBonus, proficiencyBonusFor, signed, SKILL_ABILITY } from '../lib/rules'
 import { HpAdjuster } from '../components/HpAdjuster'
 import { CurrencyEditor } from '../components/CurrencyEditor'
+import { TraitsEditor } from '../components/TraitsEditor'
 import { useUpdateSpellSlots } from '../hooks/useCharacterMutations'
 import type { SpellSlotInput } from '../types/character'
 
@@ -197,28 +198,11 @@ export default function CharacterSheetPage() {
         <CurrencyEditor characterId={c.id} cp={c.cp ?? 0} sp={c.sp ?? 0} ep={c.ep ?? 0} gp={c.gp ?? 0} pp={c.pp ?? 0} />
       </section>
 
-      {/* 性格與背景（W5：後端 detail GET backstory；任一欄有值才顯示） */}
-      {c.backstory && (c.backstory.personalityTraits || c.backstory.ideals || c.backstory.bonds || c.backstory.flaws || c.backstory.backstory) && (
-        <section style={card}>
-          <h2 style={h2}>性格與背景</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 24px' }}>
-            {([['性格特質', c.backstory.personalityTraits], ['理想', c.backstory.ideals], ['羈絆', c.backstory.bonds], ['缺陷', c.backstory.flaws]] as const)
-              .filter(([, v]) => !!v)
-              .map(([label, v]) => (
-                <div key={label}>
-                  <div style={{ fontSize: 10, letterSpacing: 2, color: 'var(--accent)', marginBottom: 3 }}>{label}</div>
-                  <div style={{ fontSize: 13, whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>{v}</div>
-                </div>
-              ))}
-          </div>
-          {c.backstory.backstory && (
-            <div style={{ marginTop: 14 }}>
-              <div style={{ fontSize: 10, letterSpacing: 2, color: 'var(--accent)', marginBottom: 3 }}>背景故事</div>
-              <div style={{ fontSize: 13, whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{c.backstory.backstory}</div>
-            </div>
-          )}
-        </section>
-      )}
+      {/* 性格與背景（可編輯：TraitsEditor 內含唯讀/編輯切換，總是顯示以提供編輯入口） */}
+      <section style={card}>
+        <h2 style={h2}>性格與背景</h2>
+        <TraitsEditor characterId={c.id} backstory={c.backstory} />
+      </section>
     </div>
   )
 }

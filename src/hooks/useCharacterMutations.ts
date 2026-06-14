@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { characterApi } from '../api/characterApi'
-import type { CharacterSummary, SpellSlotInput, CurrencyUpdate } from '../types/character'
+import type { CharacterSummary, SpellSlotInput, CurrencyUpdate, TraitsUpdate } from '../types/character'
 
 // 角色即時狀態編輯的 mutation hooks（6.2 即時狀態編輯）。
 //
@@ -41,5 +41,12 @@ export function useUpdateCurrency(id: string) {
 export function useUpdateSpellSlots(id: string) {
   return useCharacterStateMutation<SpellSlotInput[]>(
     id, (slots) => characterApi.updateSpellSlots(id, slots),
+  )
+}
+
+/** 性格敘事：5 欄全量覆寫（PATCH /traits）。 */
+export function useUpdateTraits(id: string) {
+  return useCharacterStateMutation<TraitsUpdate>(
+    id, (body) => characterApi.updateTraits(id, body),
   )
 }

@@ -7,6 +7,7 @@ import type {
   PageResponse,
   SpellSlotInput,
   CurrencyUpdate,
+  TraitsUpdate,
 } from '../types/character'
 import type { LevelUpRequest } from '../types/levelup'
 
@@ -43,6 +44,10 @@ export const characterApi = {
   // 全量替換法術環位快照（後端為 PUT，非 PATCH）
   updateSpellSlots: (id: string, slots: SpellSlotInput[]) =>
     apiClient.put<CharacterSummary>(`${BASE}/${id}/spell-slots`, { slots }).then(r => r.data),
+
+  // 全量覆寫角色扮演敘事（PATCH /traits，5 欄絕對值覆寫）
+  updateTraits: (id: string, body: TraitsUpdate) =>
+    apiClient.patch<CharacterSummary>(`${BASE}/${id}/traits`, body).then(r => r.data),
 
   archive: (id: string) =>
     apiClient.patch<CharacterSummary>(`${BASE}/${id}/archive`).then(r => r.data),
