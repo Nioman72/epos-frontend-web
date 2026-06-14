@@ -1,3 +1,16 @@
+// 角色卡 detail GET 子資源摘要（list 端點為空 / 缺）——對齊後端 CharacterSummaryDto
+export interface AbilitySummary { code: string; score: number; modifier: number; savingThrowProficient: boolean }
+export interface SkillSummary { slug: string; proficiencyLevel: number }
+export interface AttackSummary {
+  id: string; name: string; attackType: string; range: string | null; property: string | null
+  bonus: number; damageDice: number; dieSize: number; damageFlat: number; damageType: string
+}
+export interface SpellSlotSummary { spellLevel: number; slotsMax: number; slotsUsed: number }
+export interface PreparedSpellSummary {
+  id: string; spellName: string; spellLevel: number; school: string | null
+  castingRange: string | null; concentration: boolean; prepared: boolean
+}
+
 export interface CharacterSummary {
   id: string
   name: string
@@ -11,6 +24,20 @@ export interface CharacterSummary {
   rulesetCode: string
   portraitKey: string | null
   updatedAt: string
+  // detail GET 補完（6.2 W0）；list 端點多為空 / 缺，故 optional
+  raceSlug?: string | null
+  classSlug?: string | null
+  subclassSlug?: string | null
+  backgroundSlug?: string | null
+  speed?: number
+  hitDiceType?: string
+  portraitData?: string | null
+  cp?: number; sp?: number; ep?: number; gp?: number; pp?: number
+  abilities?: AbilitySummary[]
+  skills?: SkillSummary[]
+  attacks?: AttackSummary[]
+  spellSlots?: SpellSlotSummary[]
+  preparedSpells?: PreparedSpellSummary[]
 }
 
 export interface CreateCharacterRequest {

@@ -4,9 +4,25 @@
   box-sizing: border-box;
 }
 
+/* 6.2 正式產品設計 tokens——主題 A 沉浸奇幻 dark（對齊 mobile theme/tokens + PDF 品牌版） */
+:root {
+  --bg: #130A07;
+  --surface: #1E1008;
+  --elevated: #2C1A0A;
+  --accent: #C9922A;
+  --accent-hover: #E8C068;
+  --accent-bg: rgba(201, 146, 42, 0.10);
+  --text: #F0E6C8;
+  --muted: #C0A078;
+  --border: rgba(201, 146, 42, 0.20);
+  --border-strong: rgba(201, 146, 42, 0.42);
+  --danger: #C87070;
+  --positive: #6BB86B;
+}
+
 body {
   margin: 0;
   font-family: system-ui, -apple-system, sans-serif;
-  background-color: #0f172a;
-  color: #e2e8f0;
+  background-color: var(--bg);
+  color: var(--text);
 }
