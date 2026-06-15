@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useRequestLog, type RequestLogEntry } from '../context/RequestLogContext'
+import { useRequestLog, type RequestLogEntry } from '@/context/RequestLogContext'
 
 function statusColor(status?: number) {
   if (!status) return 'text-slate-400'

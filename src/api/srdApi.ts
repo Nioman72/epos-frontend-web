@@ -1,9 +1,9 @@
-import { apiClient } from './client'
+import { apiClient } from '@/api/client'
 import type {
   SrdRace, SrdSubrace, SrdClass, SrdSubclass,
   SrdSkill, SrdBackground, SrdSpell, SrdEquipment,
   PageResponse, SrdLocale, SrdRuleset,
-} from '../types/srd'
+} from '@/types/srd'
 
 const BASE = '/api/v1/srd'
 

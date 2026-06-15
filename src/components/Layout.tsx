@@ -1,6 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import RequestLogPanel from './RequestLogPanel'
+import { useAuth } from '@/context/AuthContext'
+import RequestLogPanel from '@/components/RequestLogPanel'
 
 const NAV_ITEMS = [
   { to: '/auth', label: '🔐 Auth' },

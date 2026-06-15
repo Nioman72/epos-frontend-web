@@ -1,5 +1,5 @@
-import { apiClient } from './client'
-import type { AdventureLogDto, CreateAdventureLogRequest, UpdateAdventureLogRequest } from '../types/adventurelog'
+import { apiClient } from '@/api/client'
+import type { AdventureLogDto, CreateAdventureLogRequest, UpdateAdventureLogRequest } from '@/types/adventurelog'
 
 function base(characterId: string) {
   return `/api/v1/characters/${characterId}/logs`

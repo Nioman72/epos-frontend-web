@@ -1,5 +1,5 @@
-import { apiClient } from './client'
-import type { AuthResponse, LoginRequest, RegisterRequest } from '../types/auth'
+import { apiClient } from '@/api/client'
+import type { AuthResponse, LoginRequest, RegisterRequest } from '@/types/auth'
 
 const BASE = '/api/v1/auth'
 

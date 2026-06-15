@@ -1,8 +1,8 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react'
-import { authApi } from '../api/authApi'
-import { tokenStore } from '../api/tokenStore'
-import { setForceLogoutCallback } from '../api/client'
-import type { AuthState, AuthUser, AuthResponse, LoginRequest, RegisterRequest } from '../types/auth'
+import { authApi } from '@/api/authApi'
+import { tokenStore } from '@/api/tokenStore'
+import { setForceLogoutCallback } from '@/api/client'
+import type { AuthState, AuthUser, AuthResponse, LoginRequest, RegisterRequest } from '@/types/auth'
 
 // ── Context 型別 ──────────────────────────────────────────────────────────────
 

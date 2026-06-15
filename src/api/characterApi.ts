@@ -1,4 +1,4 @@
-import { apiClient } from './client'
+import { apiClient } from '@/api/client'
 import type {
   CharacterSummary,
   CreateCharacterRequest,
@@ -8,8 +8,8 @@ import type {
   SpellSlotInput,
   CurrencyUpdate,
   TraitsUpdate,
-} from '../types/character'
-import type { LevelUpRequest } from '../types/levelup'
+} from '@/types/character'
+import type { LevelUpRequest } from '@/types/levelup'
 
 const BASE = '/api/v1/characters'
 

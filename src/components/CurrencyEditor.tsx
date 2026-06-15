@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { useUpdateCurrency } from '../hooks/useCharacterMutations'
-import type { CurrencyUpdate } from '../types/character'
+import { useUpdateCurrency } from '@/hooks/useCharacterMutations'
+import type { CurrencyUpdate } from '@/types/character'
 
 type Props = CurrencyUpdate & { characterId: string }
 

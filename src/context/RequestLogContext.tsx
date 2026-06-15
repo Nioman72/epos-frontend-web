@@ -6,7 +6,7 @@ import {
   useEffect,
   type ReactNode,
 } from 'react'
-import { apiClient } from '../api/client'
+import { apiClient } from '@/api/client'
 import type { InternalAxiosRequestConfig, AxiosResponse } from 'axios'
 
 // ── 型別 ──────────────────────────────────────────────────────────────────────

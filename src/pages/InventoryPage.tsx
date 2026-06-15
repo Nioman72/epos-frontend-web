@@ -1,10 +1,10 @@
 import { useState, useCallback } from 'react'
-import { characterApi } from '../api/characterApi'
-import { inventoryApi } from '../api/inventoryApi'
-import type { CharacterSummary } from '../types/character'
-import type { ItemDto, AddItemRequest, UpdateItemRequest } from '../types/inventory'
-import type { ApiError } from '../types/api'
-import { useAuth } from '../context/AuthContext'
+import { characterApi } from '@/api/characterApi'
+import { inventoryApi } from '@/api/inventoryApi'
+import type { CharacterSummary } from '@/types/character'
+import type { ItemDto, AddItemRequest, UpdateItemRequest } from '@/types/inventory'
+import type { ApiError } from '@/types/api'
+import { useAuth } from '@/context/AuthContext'
 
 // ── 小工具 ────────────────────────────────────────────────────────────────────
 

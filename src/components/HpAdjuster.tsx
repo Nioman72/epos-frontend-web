@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useUpdateHp } from '../hooks/useCharacterMutations'
+import { useUpdateHp } from '@/hooks/useCharacterMutations'
 
 // HP 調整器（即時狀態編輯）：輸入數值 → 治療(+) / 傷害(-) / 暫時 HP(+temp)。
 // mutation 以伺服器回應更新角色卡，戰鬥區 HP 顯示即時刷新。

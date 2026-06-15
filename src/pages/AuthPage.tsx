@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { useAuth } from '../context/AuthContext'
-import { authApi } from '../api/authApi'
-import type { ApiError } from '../types/api'
+import { useAuth } from '@/context/AuthContext'
+import { authApi } from '@/api/authApi'
+import type { ApiError } from '@/types/api'
 
 type Mode = 'login' | 'register' | 'guest'
 

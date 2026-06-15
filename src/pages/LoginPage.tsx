@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '@/context/AuthContext'
 
 // 正式產品登入頁（6.2）。複用 AuthContext.login（API Client 已備 401 refresh）。
 export default function LoginPage() {

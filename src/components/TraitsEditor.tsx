@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { useUpdateTraits } from '../hooks/useCharacterMutations'
-import type { BackstorySummary } from '../types/character'
+import { useUpdateTraits } from '@/hooks/useCharacterMutations'
+import type { BackstorySummary } from '@/types/character'
 
 const FIELDS: Array<[keyof BackstorySummary, string]> = [
   ['personalityTraits', '性格特質'], ['ideals', '理想'], ['bonds', '羈絆'], ['flaws', '缺陷'], ['backstory', '背景故事'],

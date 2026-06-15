@@ -2,9 +2,9 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { AuthProvider } from './context/AuthContext'
-import { RequestLogProvider } from './context/RequestLogContext'
-import App from './App'
+import { AuthProvider } from '@/context/AuthContext'
+import { RequestLogProvider } from '@/context/RequestLogContext'
+import App from '@/App'
 import './index.css'
 
 // react-query：Web 正式產品走伺服器快取直接 API（6.2，不複製 mobile SQLite local-first）

@@ -1,5 +1,5 @@
-import { apiClient } from './client'
-import type { ItemDto, AddItemRequest, UpdateItemRequest } from '../types/inventory'
+import { apiClient } from '@/api/client'
+import type { ItemDto, AddItemRequest, UpdateItemRequest } from '@/types/inventory'
 
 function base(characterId: string) {
   return `/api/v1/characters/${characterId}/items`

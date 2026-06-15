@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '@/context/AuthContext'
 
 // 正式產品殼（6.2）：品牌側欄導航 + 內容區。對齊主題 A 沉浸奇幻（CSS 變數於 index.css）。
 

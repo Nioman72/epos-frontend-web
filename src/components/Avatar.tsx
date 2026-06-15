@@ -1,4 +1,4 @@
-import { avatarInitial, avatarColor } from '../lib/avatar'
+import { avatarInitial, avatarColor } from '@/lib/avatar'
 
 // 角色頭像（圓形）：有 portraitData 顯圖、無則名稱首字 + 依名 hash 底色。
 

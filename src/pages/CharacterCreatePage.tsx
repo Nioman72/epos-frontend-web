@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { srdApi } from '../api/srdApi'
-import { characterApi } from '../api/characterApi'
-import type { SrdRace, SrdSubrace, SrdClass, SrdSubclass, SrdBackground, SrdSkill } from '../types/srd'
-import type { SyncCharacterRequest } from '../types/character'
-import { abilityMod, signed, calcHp, calcAc, pointBuyUsed } from '../lib/rules'
+import { srdApi } from '@/api/srdApi'
+import { characterApi } from '@/api/characterApi'
+import type { SrdRace, SrdSubrace, SrdClass, SrdSubclass, SrdBackground, SrdSkill } from '@/types/srd'
+import type { SyncCharacterRequest } from '@/types/character'
+import { abilityMod, signed, calcHp, calcAc, pointBuyUsed } from '@/lib/rules'
 
 // 完整引導建角 wizard（6.2，ADR-026 修正後）：種族→職業→背景→屬性→技能→確認。
 // 提交鏈對齊後端實際契約（slug 模式）：

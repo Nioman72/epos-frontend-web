@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '@/context/AuthContext'
 
 // 正式產品註冊頁（6.2，ADR-026 次要 bug：補正式註冊入口）。
 // 後端 register 即回 token → AuthContext 自動登入 → 導向角色清單。

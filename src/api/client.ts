@@ -1,7 +1,7 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios'
-import { tokenStore } from './tokenStore'
-import type { AuthResponse } from '../types/auth'
-import type { ApiError } from '../types/api'
+import { tokenStore } from '@/api/tokenStore'
+import type { AuthResponse } from '@/types/auth'
+import type { ApiError } from '@/types/api'
 
 // ── axios instance ────────────────────────────────────────────────────────────
 

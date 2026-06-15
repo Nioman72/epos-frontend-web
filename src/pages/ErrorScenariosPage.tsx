@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { apiClient } from '../api/client'
-import { characterApi } from '../api/characterApi'
-import { srdApi } from '../api/srdApi'
-import { useAuth } from '../context/AuthContext'
-import type { ApiError } from '../types/api'
+import { apiClient } from '@/api/client'
+import { characterApi } from '@/api/characterApi'
+import { srdApi } from '@/api/srdApi'
+import { useAuth } from '@/context/AuthContext'
+import type { ApiError } from '@/types/api'
 
 // ── 小工具 ────────────────────────────────────────────────────────────────────
 

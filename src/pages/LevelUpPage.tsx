@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react'
-import { characterApi } from '../api/characterApi'
-import type { CharacterSummary } from '../types/character'
-import type { LevelUpRequest, AsiChoiceRequest, AsiEntry, AbilityCode } from '../types/levelup'
-import type { ApiError } from '../types/api'
-import { useAuth } from '../context/AuthContext'
+import { characterApi } from '@/api/characterApi'
+import type { CharacterSummary } from '@/types/character'
+import type { LevelUpRequest, AsiChoiceRequest, AsiEntry, AbilityCode } from '@/types/levelup'
+import type { ApiError } from '@/types/api'
+import { useAuth } from '@/context/AuthContext'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 

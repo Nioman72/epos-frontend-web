@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
-import { srdApi } from '../api/srdApi'
-import type { SrdBase, SrdLocale, SrdRuleset, SrdSkill } from '../types/srd'
-import type { ApiError } from '../types/api'
+import { srdApi } from '@/api/srdApi'
+import type { SrdBase, SrdLocale, SrdRuleset, SrdSkill } from '@/types/srd'
+import type { ApiError } from '@/types/api'
 
 // ── 小工具元件 ────────────────────────────────────────────────────────────────
 

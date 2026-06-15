@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
-import { characterApi } from '../api/characterApi'
-import { Avatar } from '../components/Avatar'
+import { characterApi } from '@/api/characterApi'
+import { Avatar } from '@/components/Avatar'
 
 // 角色清單（6.2 正式產品）：react-query 直接 API；卡片 + 頭像 fallback。
 // 清單端點不回 portraitData（避免膨脹），故卡片頭像以首字母呈現；詳情頁才顯圖。

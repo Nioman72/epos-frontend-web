@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { characterApi } from '../api/characterApi'
-import type { CharacterSummary, SpellSlotInput, CurrencyUpdate, TraitsUpdate } from '../types/character'
+import { characterApi } from '@/api/characterApi'
+import type { CharacterSummary, SpellSlotInput, CurrencyUpdate, TraitsUpdate } from '@/types/character'
 
 // 角色即時狀態編輯的 mutation hooks（6.2 即時狀態編輯）。
 //

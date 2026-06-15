@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react'
-import { characterApi } from '../api/characterApi'
-import type { CharacterSummary, SyncCharacterRequest } from '../types/character'
-import type { ApiError } from '../types/api'
-import { useAuth } from '../context/AuthContext'
+import { characterApi } from '@/api/characterApi'
+import type { CharacterSummary, SyncCharacterRequest } from '@/types/character'
+import type { ApiError } from '@/types/api'
+import { useAuth } from '@/context/AuthContext'
 
 // ── 小工具 ────────────────────────────────────────────────────────────────────
 

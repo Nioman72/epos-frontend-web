@@ -1,14 +1,14 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { characterApi } from '../api/characterApi'
-import { inventoryApi } from '../api/inventoryApi'
-import { Avatar } from '../components/Avatar'
-import { abilityMod, proficiencyBonus, proficiencyBonusFor, signed, SKILL_ABILITY } from '../lib/rules'
-import { HpAdjuster } from '../components/HpAdjuster'
-import { CurrencyEditor } from '../components/CurrencyEditor'
-import { TraitsEditor } from '../components/TraitsEditor'
-import { useUpdateSpellSlots } from '../hooks/useCharacterMutations'
-import type { SpellSlotInput } from '../types/character'
+import { characterApi } from '@/api/characterApi'
+import { inventoryApi } from '@/api/inventoryApi'
+import { Avatar } from '@/components/Avatar'
+import { abilityMod, proficiencyBonus, proficiencyBonusFor, signed, SKILL_ABILITY } from '@/lib/rules'
+import { HpAdjuster } from '@/components/HpAdjuster'
+import { CurrencyEditor } from '@/components/CurrencyEditor'
+import { TraitsEditor } from '@/components/TraitsEditor'
+import { useUpdateSpellSlots } from '@/hooks/useCharacterMutations'
+import type { SpellSlotInput } from '@/types/character'
 
 // 唯讀角色卡（6.2 W3 + W5）：react-query 直接 API；六圍/戰鬥/技能/攻擊/法術/裝備/性格。
 // 性格敘事由後端 detail GET 的 backstory 物件提供（W5 補完，list 端點不帶）。
