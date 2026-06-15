@@ -6,10 +6,14 @@ import type { SrdRace, SrdSubrace, SrdClass, SrdSubclass, SrdBackground, SrdSkil
 import type { SyncCharacterRequest } from '../types/character'
 import { abilityMod, signed, calcHp, calcAc, pointBuyUsed } from '../lib/rules'
 
-// 完整引導建角 wizard（6.2）：種族→職業→背景→屬性→技能→確認。
-// 複用 Phase 2 建角邏輯（計算 + create→sync→applyBackground 提交鏈），品牌化 UI；
-// 補上 Phase 2 缺的「職業寫入（sync classes）」與「技能選擇步驟（sync skills）」，
-// 建出真正完整的角色，完成後導向其角色卡。
+// 完整引導建角 wizard（6.2，ADR-026 修正後）：種族→職業→背景→屬性→技能→確認。
+// 提交鏈對齊後端實際契約（slug 模式）：
+//   1. create（slug + abilityScores + startEquipmentMode）——後端一步建好：查 SRD → 算
+//      HP/AC/速度/先攻、寫六圍(含豁免)、寫職業子表（含子職業）。
+//   2. applyBackground——套背景裝備（A 具體裝備 / B 50 金幣）。
+//   3. 若有自選技能 → sync 補 skills（classes/abilityScores 傳 null 保留 create 寫入，
+//      因後端 sync 對 null 欄位 null-guarded 不動；create 無 skills 欄位故需此步）。
+// 完成後導向角色卡。
 const RULESET = '5.2' as const   // 全 app 固定 PHB 2024（與 mobile / Phase 2 一致）
 const LOCALE = 'zh-TW' as const
 const ABILITIES = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA'] as const
@@ -63,15 +67,15 @@ function StepIndicator({ current }: { current: number }) {
 }
 
 interface Draft {
-  raceId: string; raceName: string; raceSpeed: number; subraceId: string | null; subraceName: string | null
-  classId: string; className: string; hitDie: number; subclassId: string | null; subclassName: string | null
-  backgroundId: string; backgroundName: string
+  raceSlug: string; raceName: string; raceSpeed: number; subraceSlug: string | null; subraceName: string | null
+  classSlug: string; className: string; hitDie: number; subclassSlug: string | null; subclassName: string | null
+  backgroundSlug: string; backgroundName: string
   scores: Record<string, number>
   skillIds: string[]
 }
 
 // ── Step 1：種族 ──
-function RaceStep({ onNext }: { onNext: (p: Pick<Draft, 'raceId' | 'raceName' | 'raceSpeed' | 'subraceId' | 'subraceName'>) => void }) {
+function RaceStep({ onNext }: { onNext: (p: Pick<Draft, 'raceSlug' | 'raceName' | 'raceSpeed' | 'subraceSlug' | 'subraceName'>) => void }) {
   const [races, setRaces] = useState<SrdRace[]>([])
   const [subraces, setSubraces] = useState<SrdSubrace[]>([])
   const [race, setRace] = useState<SrdRace | null>(null)
@@ -97,14 +101,14 @@ function RaceStep({ onNext }: { onNext: (p: Pick<Draft, 'raceId' | 'raceName' | 
       )}
       <div style={navRow}>
         <button style={primaryBtn(!race)} disabled={!race}
-          onClick={() => onNext({ raceId: race!.id, raceName: race!.name, raceSpeed: race!.speed, subraceId: sub?.id ?? null, subraceName: sub?.name ?? null })}>下一步 →</button>
+          onClick={() => onNext({ raceSlug: race!.slug, raceName: race!.name, raceSpeed: race!.speed, subraceSlug: sub?.slug ?? null, subraceName: sub?.name ?? null })}>下一步 →</button>
       </div>
     </div>
   )
 }
 
-// ── Step 2：職業（保留 classId 供 sync 寫入職業）──
-function ClassStep({ onNext, onBack }: { onNext: (p: Pick<Draft, 'classId' | 'className' | 'hitDie' | 'subclassId' | 'subclassName'>) => void; onBack: () => void }) {
+// ── Step 2：職業 ──
+function ClassStep({ onNext, onBack }: { onNext: (p: Pick<Draft, 'classSlug' | 'className' | 'hitDie' | 'subclassSlug' | 'subclassName'>) => void; onBack: () => void }) {
   const [classes, setClasses] = useState<SrdClass[]>([])
   const [subclasses, setSubclasses] = useState<SrdSubclass[]>([])
   const [cls, setCls] = useState<SrdClass | null>(null)
@@ -131,14 +135,14 @@ function ClassStep({ onNext, onBack }: { onNext: (p: Pick<Draft, 'classId' | 'cl
       <div style={navRow}>
         <button style={ghostBtn} onClick={onBack}>← 返回</button>
         <button style={primaryBtn(!cls)} disabled={!cls}
-          onClick={() => onNext({ classId: cls!.id, className: cls!.name, hitDie: cls!.hitDie, subclassId: sub?.id ?? null, subclassName: sub?.name ?? null })}>下一步 →</button>
+          onClick={() => onNext({ classSlug: cls!.slug, className: cls!.name, hitDie: cls!.hitDie, subclassSlug: sub?.slug ?? null, subclassName: sub?.name ?? null })}>下一步 →</button>
       </div>
     </div>
   )
 }
 
 // ── Step 3：背景 ──
-function BackgroundStep({ onNext, onBack }: { onNext: (p: Pick<Draft, 'backgroundId' | 'backgroundName'>) => void; onBack: () => void }) {
+function BackgroundStep({ onNext, onBack }: { onNext: (p: Pick<Draft, 'backgroundSlug' | 'backgroundName'>) => void; onBack: () => void }) {
   const [bgs, setBgs] = useState<SrdBackground[]>([])
   const [bg, setBg] = useState<SrdBackground | null>(null)
   useEffect(() => { srdApi.listBackgrounds(RULESET, LOCALE).then(setBgs).catch(() => {}) }, [])
@@ -150,7 +154,7 @@ function BackgroundStep({ onNext, onBack }: { onNext: (p: Pick<Draft, 'backgroun
       </div>
       <div style={navRow}>
         <button style={ghostBtn} onClick={onBack}>← 返回</button>
-        <button style={primaryBtn(!bg)} disabled={!bg} onClick={() => onNext({ backgroundId: bg!.id, backgroundName: bg!.name })}>下一步 →</button>
+        <button style={primaryBtn(!bg)} disabled={!bg} onClick={() => onNext({ backgroundSlug: bg!.slug, backgroundName: bg!.name })}>下一步 →</button>
       </div>
     </div>
   )
@@ -191,7 +195,7 @@ function AbilityStep({ hitDie, initial, onNext, onBack }: { hitDie: number; init
   )
 }
 
-// ── Step 5：技能（Phase 2 缺，本刀新增）──
+// ── Step 5：技能（後端 create 無 skills 欄位，建角後以 sync 補）──
 function SkillStep({ scores, initial, onNext, onBack }: { scores: Record<string, number>; initial: string[]; onNext: (ids: string[]) => void; onBack: () => void }) {
   const [skills, setSkills] = useState<SrdSkill[]>([])
   const [selected, setSelected] = useState<Set<string>>(new Set(initial))
@@ -230,45 +234,44 @@ function SkillStep({ scores, initial, onNext, onBack }: { scores: Record<string,
   )
 }
 
-// ── Step 6：確認 + 提交（create → sync → applyBackground）──
+// ── Step 6：確認 + 提交（create → applyBackground → 有技能才 sync 補）──
 function ConfirmStep({ draft, onBack }: { draft: Draft; onBack: () => void }) {
   const navigate = useNavigate()
-  const dexMod = abilityMod(draft.scores['DEX'] ?? 10)
   const [name, setName] = useState('')
   const [level, setLevel] = useState(1)
-  const autoHp = calcHp(draft.hitDie, level, draft.scores['CON'] ?? 10)
-  const autoAc = calcAc(draft.scores['DEX'] ?? 10)
-  const [hpMax, setHpMax] = useState(autoHp)
-  const [ac, setAc] = useState(autoAc)
-  const [hpManual, setHpManual] = useState(false)
-  const [acManual, setAcManual] = useState(false)
   const [pkg, setPkg] = useState<'A' | 'B'>('A')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => { if (!hpManual) setHpMax(autoHp) }, [autoHp, hpManual])
-  useEffect(() => { if (!acManual) setAc(autoAc) }, [autoAc, acManual])
+  const estHp = calcHp(draft.hitDie, level, draft.scores['CON'] ?? 10)
+  const estAc = calcAc(draft.scores['DEX'] ?? 10)
 
   const create = async () => {
     setBusy(true); setError(null)
     try {
+      // 1. create（slug 一步建好：種族/職業/屬性含豁免/HP/AC/速度/先攻）
       const char = await characterApi.create({
         name: name.trim(), startingLevel: level,
-        raceId: draft.raceId || null, subraceId: draft.subraceId || null,
-        backgroundId: draft.backgroundId || null, abilityScores: draft.scores,
+        raceSlug: draft.raceSlug, subraceSlug: draft.subraceSlug,
+        classSlug: draft.classSlug, subclassSlug: draft.subclassSlug,
+        backgroundSlug: draft.backgroundSlug,
+        abilityScores: draft.scores, startEquipmentMode: pkg,
       })
-      const syncBody: SyncCharacterRequest = {
-        name: char.name, totalLevel: char.totalLevel, experiencePoints: 0,
-        armorClass: ac, initiativeBonus: dexMod, speed: draft.raceSpeed,
-        hpMax, hpCurrent: hpMax, hpTemp: 0, hitDiceType: `d${draft.hitDie}`, hitDiceUsed: 0,
-        deathSaveSuccesses: 0, deathSaveFailures: 0,
-        abilityScores: ABILITIES.map(code => ({ abilityCode: code, score: draft.scores[code], savingThrowProficient: false })),
-        classes: [{ classId: draft.classId, subclassId: draft.subclassId, level, isPrimary: true }],
-        skills: draft.skillIds.map(id => ({ skillId: id, proficiencyLevel: 1 })),
-        currency: null, items: null, backstory: null, appearance: null,
+      // 2. 套背景裝備（A 具體裝備 / B 50 金幣）
+      await characterApi.applyBackground(char.id, pkg)
+      // 3. 自選技能：後端 create 無 skills 欄位，以 sync 補（classes/abilityScores 傳 null
+      //    → 後端 null-guarded 保留 create 寫入的職業與含豁免六圍）
+      if (draft.skillIds.length > 0) {
+        await characterApi.sync(char.id, {
+          name: char.name, totalLevel: char.totalLevel, experiencePoints: 0,
+          armorClass: char.armorClass, initiativeBonus: abilityMod(draft.scores['DEX'] ?? 10),
+          speed: char.speed ?? draft.raceSpeed, hpMax: char.hpMax, hpCurrent: char.hpCurrent, hpTemp: 0,
+          hitDiceType: char.hitDiceType ?? `d${draft.hitDie}`, hitDiceUsed: 0,
+          deathSaveSuccesses: 0, deathSaveFailures: 0,
+          abilityScores: null, classes: null,
+          skills: draft.skillIds.map(id => ({ skillId: id, proficiencyLevel: 1 })),
+          currency: null, items: null, backstory: null, appearance: null,
+        } as SyncCharacterRequest)
       }
-      await characterApi.sync(char.id, syncBody)
-      if (draft.backgroundId) await characterApi.applyBackground(char.id, pkg)
       navigate(`/characters/${char.id}`)
     } catch (e) {
       setError((e as { message?: string }).message ?? '建立失敗，請稍後再試')
@@ -276,19 +279,15 @@ function ConfirmStep({ draft, onBack }: { draft: Draft; onBack: () => void }) {
     }
   }
 
-  const hpAcFields = [
-    { lab: 'HP Max', val: hpMax, setVal: setHpMax, man: hpManual, setMan: setHpManual, auto: autoHp },
-    { lab: 'AC', val: ac, setVal: setAc, man: acManual, setMan: setAcManual, auto: autoAc },
-  ]
-
   return (
     <div>
       <div style={{ background: 'var(--elevated)', borderRadius: 4, padding: 14, marginBottom: 16, fontSize: 12 }}>
         {[
           ['種族', draft.subraceName ? `${draft.raceName} · ${draft.subraceName}` : draft.raceName],
           ['職業', draft.subclassName ? `${draft.className} · ${draft.subclassName}` : `${draft.className}（d${draft.hitDie}）`],
-          ['背景', draft.backgroundName || '—'],
+          ['背景', draft.backgroundName],
           ['技能熟練', `${draft.skillIds.length} 項`],
+          ['預估 HP / AC', `${estHp} / ${estAc}（後端最終計算）`],
         ].map(([k, v]) => (
           <div key={k} style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0' }}>
             <span style={{ color: 'var(--muted)' }}>{k}</span><span style={{ color: 'var(--text)' }}>{v}</span>
@@ -308,36 +307,19 @@ function ConfirmStep({ draft, onBack }: { draft: Draft; onBack: () => void }) {
         </label>
       </div>
 
-      <div style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
-        {hpAcFields.map(f => (
-          <div key={f.lab} style={{ flex: 1, background: 'var(--elevated)', borderRadius: 4, padding: 10 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-              <span style={{ fontSize: 11, color: 'var(--muted)' }}>{f.lab}</span>
-              <label style={{ fontSize: 10, color: 'var(--muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 3 }}>
-                <input type="checkbox" checked={f.man} onChange={e => { f.setMan(e.target.checked); if (!e.target.checked) f.setVal(f.auto) }} /> 手動
-              </label>
-            </div>
-            <input type="number" value={f.val} readOnly={!f.man} onChange={e => f.setVal(Number(e.target.value))}
-              style={{ ...numInput, opacity: f.man ? 1 : 0.7 }} />
-          </div>
-        ))}
-      </div>
-
-      {draft.backgroundId && (
-        <div style={{ marginBottom: 14 }}>
-          <div style={{ fontSize: 11, color: 'var(--muted)', marginBottom: 6 }}>背景裝備包</div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            {(['A', 'B'] as const).map(p => (
-              <button key={p} onClick={() => setPkg(p)} style={{
-                flex: 1, cursor: 'pointer', borderRadius: 4, padding: '8px', fontSize: 12,
-                border: `1px solid ${pkg === p ? 'var(--accent)' : 'var(--border)'}`,
-                background: pkg === p ? 'var(--accent-bg)' : 'var(--elevated)',
-                color: pkg === p ? 'var(--accent)' : 'var(--muted)',
-              }}>{p === 'A' ? 'A 包（具體裝備）' : 'B 包（50 金幣）'}</button>
-            ))}
-          </div>
+      <div style={{ marginBottom: 14 }}>
+        <div style={{ fontSize: 11, color: 'var(--muted)', marginBottom: 6 }}>背景裝備包</div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {(['A', 'B'] as const).map(p => (
+            <button key={p} onClick={() => setPkg(p)} style={{
+              flex: 1, cursor: 'pointer', borderRadius: 4, padding: '8px', fontSize: 12,
+              border: `1px solid ${pkg === p ? 'var(--accent)' : 'var(--border)'}`,
+              background: pkg === p ? 'var(--accent-bg)' : 'var(--elevated)',
+              color: pkg === p ? 'var(--accent)' : 'var(--muted)',
+            }}>{p === 'A' ? 'A 包（具體裝備）' : 'B 包（50 金幣）'}</button>
+          ))}
         </div>
-      )}
+      </div>
 
       {error && <div style={{ color: 'var(--danger)', fontSize: 12, marginBottom: 12 }}>{error}</div>}
 

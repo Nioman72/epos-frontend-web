@@ -54,14 +54,18 @@ export interface CharacterSummary {
   backstory?: BackstorySummary
 }
 
+// 對齊後端 CreateCharacterRequest（slug 模式，一步建好：查 SRD → 算 HP/AC/速度/先攻）
 export interface CreateCharacterRequest {
   name: string
   startingLevel: number
-  raceId?: string | null
-  subraceId?: string | null
-  backgroundId?: string | null
+  raceSlug: string
+  subraceSlug?: string | null
+  classSlug: string
+  subclassSlug?: string | null
+  backgroundSlug: string
   alignment?: string | null
   abilityScores?: Record<string, number> | null
+  startEquipmentMode?: 'A' | 'B'
 }
 
 // Sync sub-types

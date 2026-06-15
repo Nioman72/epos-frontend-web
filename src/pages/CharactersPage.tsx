@@ -107,7 +107,7 @@ function CreateForm({ onCreated }: { onCreated: (c: CharacterSummary) => void })
     setError(null)
     setLoading(true)
     try {
-      const char = await characterApi.create({ name, startingLevel: level })
+      const char = await characterApi.create({ name, startingLevel: level, raceSlug: 'human', classSlug: 'fighter', backgroundSlug: 'soldier' })
       onCreated(char)
       setName('Test Hero')
       setLevel(1)

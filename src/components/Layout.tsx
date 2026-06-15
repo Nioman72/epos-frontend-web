@@ -5,7 +5,6 @@ import RequestLogPanel from './RequestLogPanel'
 const NAV_ITEMS = [
   { to: '/auth', label: '🔐 Auth' },
   { to: '/srd', label: '📚 SRD' },
-  { to: '/character-wizard', label: '🧙 建角流程' },
   { to: '/characters', label: '🃏 Characters' },
   { to: '/level-up', label: '⬆️ Level Up' },
   { to: '/inventory', label: '🎒 Inventory' },

@@ -13,7 +13,6 @@ import CharacterSheetPage from './pages/CharacterSheetPage'
 import AuthPage from './pages/AuthPage'
 import SrdPage from './pages/SrdPage'
 import CharactersPage from './pages/CharactersPage'
-import CharacterWizardPage from './pages/CharacterWizardPage'
 import LevelUpPage from './pages/LevelUpPage'
 import InventoryPage from './pages/InventoryPage'
 import AdventureLogPage from './pages/AdventureLogPage'
@@ -37,7 +36,6 @@ export default function App() {
         <Route index element={<Navigate to="/dev/auth" replace />} />
         <Route path="auth" element={<AuthPage />} />
         <Route path="srd" element={<SrdPage />} />
-        <Route path="character-wizard" element={<CharacterWizardPage />} />
         <Route path="characters" element={<CharactersPage />} />
         <Route path="level-up" element={<LevelUpPage />} />
         <Route path="inventory" element={<InventoryPage />} />
