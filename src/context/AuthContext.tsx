@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect, useCallback, type React
 import { authApi } from '../api/authApi'
 import { tokenStore } from '../api/tokenStore'
 import { setForceLogoutCallback } from '../api/client'
-import type { AuthState, AuthUser, LoginRequest, RegisterRequest } from '../types/auth'
+import type { AuthState, AuthUser, AuthResponse, LoginRequest, RegisterRequest } from '../types/auth'
 
 // ── Context 型別 ──────────────────────────────────────────────────────────────
 
@@ -81,20 +81,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // ── helpers ────────────────────────────────────────────────────────────────
 
-  function applyAuthResponse(
-    accessToken: string,
-    refreshToken: string,
-    userId: string,
-    email: string,
-    role: string
-  ) {
-    const user: AuthUser = { userId, email, role: role as AuthUser['role'] }
-    tokenStore.setTokens(accessToken, refreshToken)
-    saveSession(accessToken, refreshToken, user)
+  // 後端 auth 回應為 isAdmin（非 role）；role 由此推導：guest 端點 → GUEST，
+  // 否則 isAdmin ? ADMIN : PLAYER。（DM 為 campaign 層級角色，非 user 層級，故不在此。）
+  function applyAuthResponse(data: AuthResponse, roleOverride?: AuthUser['role']) {
+    const role: AuthUser['role'] = roleOverride ?? (data.isAdmin ? 'ADMIN' : 'PLAYER')
+    const user: AuthUser = { userId: data.userId, email: data.email, role }
+    tokenStore.setTokens(data.accessToken, data.refreshToken)
+    saveSession(data.accessToken, data.refreshToken, user)
     setState({
       user,
-      accessToken,
-      refreshToken,
+      accessToken: data.accessToken,
+      refreshToken: data.refreshToken,
       isAuthenticated: true,
       isGuest: role === 'GUEST',
     })
@@ -103,18 +100,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // ── actions ────────────────────────────────────────────────────────────────
 
   const login = async (req: LoginRequest) => {
-    const data = await authApi.login(req)
-    applyAuthResponse(data.accessToken, data.refreshToken, data.userId, data.email, data.role)
+    applyAuthResponse(await authApi.login(req))
   }
 
   const register = async (req: RegisterRequest) => {
-    const data = await authApi.register(req)
-    applyAuthResponse(data.accessToken, data.refreshToken, data.userId, data.email, data.role)
+    applyAuthResponse(await authApi.register(req))
   }
 
   const guestLogin = async () => {
-    const data = await authApi.guestLogin()
-    applyAuthResponse(data.accessToken, data.refreshToken, data.userId, data.email, data.role)
+    applyAuthResponse(await authApi.guestLogin(), 'GUEST')
   }
 
   const logout = async () => {
@@ -130,8 +124,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const manualRefresh = async () => {
     if (!state.refreshToken) throw new Error('No refresh token')
-    const data = await authApi.refresh(state.refreshToken)
-    applyAuthResponse(data.accessToken, data.refreshToken, data.userId, data.email, data.role)
+    // refresh 回應同樣只帶 isAdmin；保持現有 role（避免 guest 被誤推為 PLAYER）
+    applyAuthResponse(await authApi.refresh(state.refreshToken), state.user?.role)
   }
 
   return (

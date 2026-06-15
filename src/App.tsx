@@ -5,6 +5,7 @@ import { ProtectedRoute } from './components/ProtectedRoute'
 
 // 正式產品頁（6.2）
 import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
 import CharactersListPage from './pages/CharactersListPage'
 import CharacterCreatePage from './pages/CharacterCreatePage'
 import CharacterSheetPage from './pages/CharacterSheetPage'
@@ -23,6 +24,7 @@ export default function App() {
     <Routes>
       {/* 正式產品（6.2：角色卡讀/編輯 + 建角 wizard） */}
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
       <Route element={<ProtectedRoute />}>
         <Route element={<AppShell />}>
           <Route path="/characters" element={<CharactersListPage />} />
