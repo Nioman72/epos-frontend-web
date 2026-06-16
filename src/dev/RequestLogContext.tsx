@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- context hook 與 Provider 同檔為慣例 */
 import {
   createContext,
   useContext,

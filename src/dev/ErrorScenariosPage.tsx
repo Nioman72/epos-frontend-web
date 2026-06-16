@@ -137,7 +137,7 @@ export default function ErrorScenariosPage() {
     const r = await capture('No Bearer token', () =>
       apiClient.get('/api/v1/characters', {
         headers: { Authorization: undefined },
-        // @ts-ignore override interceptor
+        // @ts-expect-error override interceptor
         _skipAuth: true,
       }).then(r => r.data)
     )

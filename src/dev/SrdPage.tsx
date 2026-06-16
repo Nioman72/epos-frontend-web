@@ -123,8 +123,9 @@ export default function SrdPage() {
   const [error, setError]         = useState<ApiError | null>(null)
   const [totalElements, setTotalElements] = useState<number | null>(null)
 
-  // 切 tab 時重置
+  // 切 tab 時重置（dev 工具：切 tab 清空狀態）
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- dev 工具切 tab 清狀態
     setItems([])
     setSelected(null)
     setDetail(null)

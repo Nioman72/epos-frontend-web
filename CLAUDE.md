@@ -11,6 +11,15 @@
 - React + Vite + TypeScript；React Router；Tailwind v4；**@tanstack/react-query**（6.2 正式產品伺服器快取）
 - ESLint / Prettier；axios（API Client Layer）
 
+## 架構（feature-based，ADR-027 2026-06-15）
+
+對齊 2026 主流 **feature-based hybrid + path alias `@/`**：
+- `shared/`：api(client·tokenStore) · ui(Avatar) · lib(avatar·rules) · types(api)
+- `features/`：auth · characters · srd · inventory · shell —— 各含該功能的 api / 元件 / hook / 型別
+- `dev/`：Phase 2 驗證工具（與正式產品隔離）
+- import 一律 `@/...` 絕對（tsconfig paths + vite resolve.alias）；`npm run build` + `npm run lint` 全綠。
+- 命名：元件 PascalCase / hook useXxx / 型別無 I 前綴 / 常數 UPPER（符合主流）。
+
 ## Phase 2 — Web API 驗證工具（✅ 完成）
 
 > 目標：打通全部後端 endpoints，為 Phase 5 奠定**可複用 API Client**。部署：本地（後端 `localhost:8080`）。

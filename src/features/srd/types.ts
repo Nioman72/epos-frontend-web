@@ -26,13 +26,13 @@ export interface SrdSkill extends SrdBase {
   abilityCode: string
 }
 
-export interface SrdBackground extends SrdBase {}
+export type SrdBackground = SrdBase
 
 export interface SrdSpell extends SrdBase {
   level?: number
 }
 
-export interface SrdEquipment extends SrdBase {}
+export type SrdEquipment = SrdBase
 
 export interface PageResponse<T> {
   content: T[]

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- context 的 useAuth hook 與 Provider 同檔為慣例 */
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react'
 import { authApi } from '@/features/auth/authApi'
 import { tokenStore } from '@/shared/api/tokenStore'
