@@ -1,23 +1,23 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import Layout from '@/components/Layout'
-import AppShell from '@/components/AppShell'
-import { ProtectedRoute } from '@/components/ProtectedRoute'
+import Layout from '@/dev/Layout'
+import AppShell from '@/features/shell/AppShell'
+import { ProtectedRoute } from '@/features/auth/ProtectedRoute'
 
 // 正式產品頁（6.2）
-import LoginPage from '@/pages/LoginPage'
-import RegisterPage from '@/pages/RegisterPage'
-import CharactersListPage from '@/pages/CharactersListPage'
-import CharacterCreatePage from '@/pages/CharacterCreatePage'
-import CharacterSheetPage from '@/pages/CharacterSheetPage'
+import LoginPage from '@/features/auth/LoginPage'
+import RegisterPage from '@/features/auth/RegisterPage'
+import CharactersListPage from '@/features/characters/CharactersListPage'
+import CharacterCreatePage from '@/features/characters/CharacterCreatePage'
+import CharacterSheetPage from '@/features/characters/CharacterSheetPage'
 
 // Phase 2 驗證頁（dev 工具，保留於 /dev/*）
-import AuthPage from '@/pages/AuthPage'
-import SrdPage from '@/pages/SrdPage'
-import CharactersPage from '@/pages/CharactersPage'
-import LevelUpPage from '@/pages/LevelUpPage'
-import InventoryPage from '@/pages/InventoryPage'
-import AdventureLogPage from '@/pages/AdventureLogPage'
-import ErrorScenariosPage from '@/pages/ErrorScenariosPage'
+import AuthPage from '@/dev/AuthPage'
+import SrdPage from '@/dev/SrdPage'
+import CharactersPage from '@/dev/CharactersPage'
+import LevelUpPage from '@/dev/LevelUpPage'
+import InventoryPage from '@/dev/InventoryPage'
+import AdventureLogPage from '@/dev/AdventureLogPage'
+import ErrorScenariosPage from '@/dev/ErrorScenariosPage'
 
 export default function App() {
   return (
